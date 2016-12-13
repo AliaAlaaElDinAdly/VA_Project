@@ -1,0 +1,281 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# National Survey on Drug Use and Health, 2012\n",
+    "\n",
+    "\n",
+    "## 0. Data Set Overview\n",
+    "\n",
+    "The dataset chosen is the [National Survey on Drug Use and Health 2012](http://www.icpsr.umich.edu/icpsrweb/ICPSR/studies/34933?q=&paging.rows=25&sortBy=10) which provides measures of the widespread and correlation of drug use in the United States in 2012. Information provided is on the use of illicit drugs, alcohol, and tabacco among members of the United State aging from 12 years and older, including residents of college dormitories, group homes, shelters, rooming houses and civilians swelling on military installations.\n",
+    "\n",
+    "\n",
+    "The data set also includes treatment information and personal/family information like income and health care coverage and many more other data. Questions in survey include age at first use as well as lifetime, annual, and past-month usage for different drugs.\n",
+    "\n",
+    "\n",
+    "## 0.1 Task Definition\n",
+    "\n",
+    "For our task definition we chose to focus on the below classes only as the data set provided include so many information and branches. Also, we are only interested to know which drug is more likely for people to get addicted to and most importantly at which age range. What is more interesting is that the data set seems big enough for each class to analyzed separately before analyzing the classes correlation.\n",
+    "\n",
+    "* [Tabacco](Tabacco.ipynb)\n",
+    "* [Alcohol](Alcohol.ipynb)\n",
+    "* [Cocaine and Crack](Cocaine and Crack.ipynb)\n",
+    "* [Marijuana](Marijuana.ipynb)\n",
+    "* [Heroin](Heroin.ipynb)\n",
+    "* [Hallucinogens](Hallucinogens.ipynb)\n",
+    "* [Inhalants](Inhalants.ipynb)\n",
+    "* [Pain Relievers](Pain Relievers.ipynb)\n",
+    "* [Tranquilizers](Tranquilizers.ipynb)\n",
+    "* [Stimulants](Stimulants.ipynb)\n",
+    "* [Sedatives](Sedatives.ipynb)\n",
+    "\n",
+    "### 0.0.1 Approach\n",
+    "\n",
+    "For every class mentioned above, the data set will be visually analyzed to define or extract the below information.\n",
+    "\n",
+    "Questions for each drug class:\n",
+    "\n",
+    "* How many cases use the drug?\n",
+    "* What are their age range?\n",
+    "* How frequently they use it?\n",
+    "* Did they stop and go back to it?\n",
+    "* Are they planning to quit?\n",
+    "\n",
+    "### 0.0.2 Results\n",
+    "\n",
+    "In the [Results](Results.ipynb) of our approach, the classes correlation will be visually analyzed to also define or extract the below information.\n",
+    "\n",
+    "* Which drug/s are frequently used?\n",
+    "* What age range use which drug/s?\n",
+    "* Did they quit a specific drug and started another? Which?\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "#disable some annoying warnings\n",
+    "import warnings\n",
+    "warnings.filterwarnings('ignore', category=FutureWarning)\n",
+    "\n",
+    "#plots the figures in place instead of a new window\n",
+    "%matplotlib inline\n",
+    "\n",
+    "import matplotlib.pyplot as plt\n",
+    "import seaborn as sns\n",
+    "\n",
+    "import numpy as np\n",
+    "import pandas as pd"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# 1. Data Preprocessing\n",
+    "We started from loading and wrangling your dataset that includes dealing with missing values and formatting your dataset for later use. \n",
+    "\n",
+    "\n",
+    "As can be seen below, the data set includes more than 55,000 cases/members that went through the survey."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "#data is a tsv file therefore read it as a csv file with \\t as the seperator\n",
+    "dataset = pd.read_csv('data/drugs-dataset.tsv', delimiter = '\\t')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(55268, 3120)"
+      ]
+     },
+     "execution_count": 15,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "dataset.shape"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+<<<<<<< HEAD
+    "## 1.1 Data Formatting\n",
+=======
+    "## 1.1 Missing Data\n",
+    "As below shown, the dataset does not have missing data. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "CASEID      0\n",
+       "QUESTID2    0\n",
+       "CIGEVER     0\n",
+       "CIGOFRSM    0\n",
+       "CIGWILYR    0\n",
+       "CIGTRY      0\n",
+       "CIGYFU      0\n",
+       "CIGMFU      0\n",
+       "CIGREC      0\n",
+       "CIG30USE    0\n",
+       "CG30EST     0\n",
+       "CIG30AV     0\n",
+       "CIG30BR2    0\n",
+       "CIG30TPE    0\n",
+       "CIG30MEN    0\n",
+       "CIG30MLN    0\n",
+       "CIG30RO2    0\n",
+       "CIGDLYMO    0\n",
+       "CIGAGE      0\n",
+       "CIGDLYFU    0\n",
+       "CIGDLMFU    0\n",
+       "CIG100LF    0\n",
+       "SNFEVER     0\n",
+       "SNUFTRY     0\n",
+       "SNUFYFU     0\n",
+       "SNUFMFU     0\n",
+       "SNFREC      0\n",
+       "SNF30USE    0\n",
+       "SN30EST     0\n",
+       "SNF30BR2    0\n",
+       "           ..\n",
+       "WRKUNWKS    0\n",
+       "WRKLSTY2    0\n",
+       "WRKIDSY2    0\n",
+       "WRKOCUY2    0\n",
+       "WRKBZCY2    0\n",
+       "WORKDAYS    0\n",
+       "WORKBLAH    0\n",
+       "LOCSIZE     0\n",
+       "DRGPLCY     0\n",
+       "PLCYCOV     0\n",
+       "WKDRGED     0\n",
+       "DRGPRGM     0\n",
+       "USALCTST    0\n",
+       "USDRGTST    0\n",
+       "TSTHIRE     0\n",
+       "TSTRAND     0\n",
+       "FIRSTPOS    0\n",
+       "WRKHIRE     0\n",
+       "WORKRAND    0\n",
+       "EMPSTATY    0\n",
+       "IIEMPSTY    0\n",
+       "II2EMSTY    0\n",
+       "EMPSTAT4    0\n",
+       "IIEMPST4    0\n",
+       "II2EMST4    0\n",
+       "PDEN00      0\n",
+       "COUTYP2     0\n",
+       "ANALWT_C    0\n",
+       "VESTR       0\n",
+       "VEREP       0\n",
+       "dtype: int64"
+      ]
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "dataset.isnull().sum()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 1.2 Data Formatting\n",
+>>>>>>> origin
+    "\n",
+    "The data set will be formatted/divided into the 12 classes that will be analyzed. Each class will be discussed separately. Missing data are handled in the data set by being assigned specific values like 9985. Such values will be excluded from the analysis depending on the inforamtion in focus."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "case_quest_data = dataset.ix[:,0:2].copy()\n",
+    "tabacco = dataset.ix[:,'CIGEVER':'PIPE30DY'].copy() # tabacco dataset\n",
+    "alcohol = dataset.ix[:,'ALCEVER':'DR5DAY'].copy() # alcohol dataset\n",
+    "cocaine = dataset.ix[:,'COCEVER':'CC30EST'].copy() # cocaine dataset\n",
+    "crack = dataset.ix[:,'CRKEVER':'CR30EST'].copy() # crack dataset\n",
+    "marijuana = dataset.ix[:,'MJEVER':'MR30EST'].copy() # marijuana dataset\n",
+    "heroin = dataset.ix[:,'HEREVER':'HR30EST'].copy() # heroin dataset\n",
+    "hallucinogens = dataset.ix[:,'LSD':'ECSREC'].copy() # hallucinogens dataset\n",
+    "inhalants = dataset.ix[:,'AMYLNIT':'IN30EST'].copy() # inhalants dataset\n",
+    "pain_relievers = dataset.ix[:,'DARVTYLC':'OXDAYPWK'].copy() # pain_relievers dataset\n",
+    "tranquilizers = dataset.ix[:,'KLONOPIN':'TRDAYPWK'].copy() # tranquilizers dataset\n",
+    "stimulants = dataset.ix[:,'METHDES':'MTDAYPWK'].copy() # stimulants dataset\n",
+    "sedatives = dataset.ix[:,'METHAQ':'SVDAYPWK'].copy() # sedatives dataset"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Next\n",
+    "\n",
+    "[Tabacco](Tabacco.ipynb)"
+   ]
+  }
+ ],
+ "metadata": {
+  "anaconda-cloud": {},
+  "kernelspec": {
+   "display_name": "Python [conda root]",
+   "language": "python",
+   "name": "conda-root-py"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.5.2"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 1
+}
